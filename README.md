@@ -3,7 +3,9 @@ WhateverGreen
 
 [![Build Status](https://github.com/acidanthera/WhateverGreen/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/acidanthera/WhateverGreen/actions) [![Scan Status](https://scan.coverity.com/projects/16177/badge.svg?flat=1)](https://scan.coverity.com/projects/16177)
 
-[Lilu](https://github.com/acidanthera/Lilu) plugin providing patches to select GPUs on macOS. Requires Lilu 1.5.6 or newer.
+[Lilu](https://github.com/acidanthera/Lilu) plugin providing patches to select GPUs on macOS. Requires Lilu 1.5.6 or newer.   
+This fork removes the `agdpmod=pikera` boot arg, effectively neutralizing apps detecting Hackintosh by boot args or abnormal environment.   
+Or as to quote, "App Store Integrity Fix."
 
 #### Features
 
@@ -76,7 +78,7 @@ Read [FAQs](./Manual/) and avoid asking any questions. No support is provided fo
 | Boot argument 	  | DeviceProperties 	| Description 	|
 |---	|---	|---	  |
 | `agdpmod=ignore` 	| `agdpmod` property to external GPU 	| Disables AGDP patches (`vit9696,pikera` value is implicit default for external GPUs) 	|
-| `agdpmod=pikera` 	| `agdpmod` property to external GPU 	| Replaces `board-id` with `board-ix` 	|
+| ~~`agdpmod=pikera`~~ 	| ~~`agdpmod` property to external GPU~~ 	| ~~Replaces `board-id` with `board-ix`~~ 	|
 | `agdpmod=vit9696` | `agdpmod` property to external GPU 	| Disable check for `board-id` 	|
 
 ##### Nvidia
