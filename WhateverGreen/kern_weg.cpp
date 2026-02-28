@@ -502,15 +502,31 @@ void WEG::processExternalProperties(IORegistryEntry *device, DeviceInfo *info, u
 
 	// Set the autodetected AMD GPU name here, it will later be handled by RAD to not get overridden.
 	// This is not necessary for NVIDIA, as their drivers properly detect the name.
-	if (vendor == WIOKit::VendorID::ATIAMD && !device->getProperty("model")) {
-		uint32_t dev, rev, subven, sub;
-		if (WIOKit::getOSDataValue(device, "device-id", dev) &&
-			WIOKit::getOSDataValue(device, "revision-id", rev) &&
-			WIOKit::getOSDataValue(device, "subsystem-vendor-id", subven) &&
-			WIOKit::getOSDataValue(device, "subsystem-id", sub)) {
-			auto model = getRadeonModel(dev, rev, subven, sub);
-			if (model) {
-				device->setProperty("model", const_cast<char *>(model), static_cast<unsigned>(strlen(model)+1));
+	if (vendor == WIOKit::VendorID::ATIAMD) {
+		uint32_t dev = 0, rev = 0, subven = 0, sub = 0;
+		bool hasDevId = WIOKit::getOSDataValue(device, "device-id", dev);
+		
+		if (hasDevId && !device->getProperty("model")) {
+			if (WIOKit::getOSDataValue(device, "revision-id", rev) &&
+				WIOKit::getOSDataValue(device, "subsystem-vendor-id", subven) &&
+				WIOKit::getOSDataValue(device, "subsystem-id", sub)) {
+				auto model = getRadeonModel(dev, rev, subven, sub);
+				if (model) {
+					device->setProperty("model", const_cast<char *>(model), static_cast<unsigned>(strlen(model)+1));
+				}
+			}
+		}
+
+		// force enable Pikera patch for Navi+
+		if (hasDevId) {
+			if ((dev & 0xFF00) == 0x7300) {
+				DBGLOG("weg", "AMD Navi GPU detected (0x%04X), forcing agdpmod=pikera", dev);
+				graphicsDisplayPolicyMod |= AGDP_PIKERA;
+				
+				// ensure AGDP policy patches aren't skipped if they were previously set to none
+				if (graphicsDisplayPolicyMod == AGDP_NONE_SET) {
+					graphicsDisplayPolicyMod = AGDP_PIKERA | AGDP_SET;
+				}
 			}
 		}
 	}
