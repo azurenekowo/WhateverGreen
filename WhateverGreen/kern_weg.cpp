@@ -128,8 +128,11 @@ void WEG::init() {
 		lilu.onKextLoadForce(&kextIOGraphics);
 
 	// Perform a black screen fix.
+    /*
 	if (graphicsDisplayPolicyMod != AGDP_NONE_SET)
 		lilu.onKextLoad(&kextAGDPolicy);
+	*/
+    lilu.onKextLoad(&kextAGDPolicy); // we load the patcher to always make sure the Navi check is always loaded
 
 	// Disable backlight patches if asked specifically.
 	PE_parse_boot_argn("applbkl", &appleBacklightPatch, sizeof(appleBacklightPatch));
